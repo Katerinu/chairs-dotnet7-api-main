@@ -32,7 +32,7 @@ app.Run();
 //TODO: ENDPOINTS SOLICITADOS
 static async Task<IResult> GetChairs(DataContext db)
 {
-    return TypedResults.Ok();
+    return TypedResults.Ok(await db.Chairs.ToArrayAsync());
 }
 
 static async Task<IResult> AddChair(Chair chair, DataContext db)
@@ -44,7 +44,12 @@ static async Task<IResult> AddChair(Chair chair, DataContext db)
 
 static async Task<IResult> GetChairByName(String name, DataContext db)
 {
-    return TypedResults.Ok();
+    var foundChair = await db.Chairs.FirstOrDefaultAsync(x => x.Nombre == name);
+    if(foundChair is null){
+        return TypedResults.NotFound();
+    }
+    
+    return TypedResults.Ok(foundChair);
 }
 
 static async Task<IResult> UpdateChair(int id, DataContext db)
