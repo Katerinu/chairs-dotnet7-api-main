@@ -73,7 +73,7 @@ static async Task<IResult> UpdateChairAsync(int id, Chair inputChair, DataContex
     return TypedResults.NoContent();
 }
 
-static async Task<IResult> IncrementChairStockAsync(int id, int inputStock, DataContext db)
+static async Task<IResult> IncrementChairStockAsync(int id, Chair chairStock, DataContext db)
 {
     var foundChair = await db.Chairs.FindAsync(id);
     if(foundChair is null)
@@ -81,7 +81,7 @@ static async Task<IResult> IncrementChairStockAsync(int id, int inputStock, Data
         return TypedResults.NotFound();
     }
 
-    foundChair.Stock = foundChair.Stock + inputStock;
+    foundChair.Stock = foundChair.Stock + chairStock.Stock;
     await db.SaveChangesAsync();
     return TypedResults.Ok(foundChair);
 }
