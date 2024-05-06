@@ -52,22 +52,62 @@ static async Task<IResult> GetChairByName(String name, DataContext db)
     return TypedResults.Ok(foundChair);
 }
 
-static async Task<IResult> UpdateChair(int id, DataContext db)
+static async Task<IResult> UpdateChair(int id, Chair inputChair, DataContext db)
 {
-    return TypedResults.Ok();
+    var foundChair = await db.Chairs.FindAsync(id);
+    if(foundChair is null)
+    {
+        return TypedResults.NotFound();
+    }
+
+    foundChair.Nombre = inputChair.Nombre;
+    foundChair.Tipo = inputChair.Tipo;
+    foundChair.Material = inputChair.Material;
+    foundChair.Color = inputChair.Color;
+    foundChair.Altura = inputChair.Altura;
+    foundChair.Anchura = inputChair.Anchura;
+    foundChair.Profundidad = inputChair.Profundidad;
+    foundChair.Precio = inputChair.Precio;
+    
+    await db.SaveChangesAsync();
+    return TypedResults.NoContent();
 }
 
-static async Task<IResult> IncrementChairStock(int id, DataContext db)
+static async Task<IResult> IncrementChairStock(int id, int inputStock, DataContext db)
 {
-    return TypedResults.Ok();
+    var foundChair = await db.Chairs.FindAsync(id);
+    if(foundChair is null)
+    {
+        return TypedResults.NotFound();
+    }
+
+    foundChair.Stock = foundChair.Stock + inputStock;
+    await db.SaveChangesAsync();
+    return TypedResults.Ok(foundChair);
 }
 
-static async Task<IResult> BuyChair(int id, int ammount, DataContext db)
+static async Task<IResult> BuyChair(int id, int ammount, int pricePayed, DataContext db)
 {
+    var foundChair = await db.Chairs.FindAsync(id);
+    if(foundChair is null)
+    {
+        return TypedResults.NotFound();
+    }
+
+    
+
     return TypedResults.Ok();
 }
 
 static async Task<IResult> DeleteChairById(int id, DataContext db)
 {
-    return TypedResults.Ok();
+    var foundChair = await db.Chairs.FindAsync(id);
+    if(foundChair is null)
+    {
+        return TypedResults.NotFound();
+    }
+
+    db.Chairs.Remove(foundChair);
+    await db.SaveChangesAsync();
+    return TypedResults.NoContent();
 }
